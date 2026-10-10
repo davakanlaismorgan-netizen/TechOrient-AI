@@ -1,0 +1,11 @@
+<!doctype html><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>Calibration TechOrient</title>
+<body style="font:15px system-ui;max-width:800px;margin:auto;padding:12px"><h1>Calibration (développeur)</h1>
+<p>Modifie les poids, colle un profil JSON, observe le classement. Reporte les poids retenus dans <code>WEIGHTS</code> (recommendation.js).</p>
+<div id="w"></div><textarea id="p" rows="10" style="width:100%"></textarea><p><button onclick="run()">Calculer</button></p><pre id="o"></pre>
+<script src="domains.js"></script><script src="recommendation.js"></script><script>
+const sample={interest:{data:5,stats:5,dash:4,web:2,ml:3,sec:1,net:1,ui:2},tech:{sql:2,py:1},motiv:{math:3,prog:4,docs:3,persist:4},goal:{code:4,hw:1,vis:2,com:3},prof:{proj:1,stat:1},like:{analyser:1,physique:3}};
+document.getElementById('p').value=JSON.stringify(sample,null,1);
+document.getElementById('w').innerHTML=Object.keys(TO.WEIGHTS).map(k=>k+' <input type="number" step="0.05" min="0" max="1" value="'+TO.WEIGHTS[k]+'" onchange="TO.WEIGHTS[\''+k+'\']=+this.value"> ').join('');
+const f=x=>x==null?'–':(x*100).toFixed(0);
+function run(){const o=document.getElementById('o');try{const r=TO.recommend(DOMAINS,JSON.parse(document.getElementById('p').value));o.textContent=(r.exploratoire||r.exploratory?'PROFIL EXPLORATOIRE\n':'')+'Contradictions : '+r.contradictions.map(c=>c.id).join(',')+'\n'+r.all.slice(0,15).map((x,i)=>(i+1)+'. '+x.name+'  final='+(x.final*100).toFixed(1)+'  I='+f(x.I)+' T='+f(x.T)+' M='+f(x.M)+' G='+f(x.G)).join('\n')}catch(e){o.textContent=e}}
+run()</script>
